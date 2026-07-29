@@ -1,70 +1,85 @@
-# Getting Started with Create React App
+# Real-Time Communication Portal
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based real-time communication application built for Sprint 11, designed to simulate a production-style messaging environment using WebSockets. The project focuses on connection lifecycle management, automatic reconnection, accessibility, and a clean enterprise interface that remains stable even when the network connection becomes unreliable.
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+The application establishes a persistent WebSocket connection and updates the interface in real time whenever a new message is received. It also handles connection failures gracefully by notifying the user and automatically attempting to reconnect using an exponential backoff strategy.
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* Persistent WebSocket connection using the required TRD endpoint
+* Real-time message updates
+* Connection status indicator (Connecting, Connected, Disconnected)
+* Automatic reconnection with exponential backoff
+* Graceful handling of connection failures
+* Initial loading state and empty state UI
+* Input validation to prevent empty messages
+* Automatic scrolling to the latest message
+* Keyboard-accessible controls and ARIA support
+* Simulated analytics logging for user actions
+* Responsive monochromatic interface suitable for desktop and mobile devices
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Tech Stack
 
-### `npm test`
+* React 18
+* JavaScript (ES6+)
+* Native WebSocket API
+* Vanilla CSS
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Project Structure
 
-### `npm run build`
+src/
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* LiveFeedEngine.jsx
+* LiveFeedEngine.css
+* App.js
+* index.js
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Getting Started
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Clone the repository and install the dependencies:
 
-### `npm run eject`
+```bash
+git clone https://github.com/btwitsnaushad/real-time-communication-portal.git
+cd real-time-communication-portal
+npm install
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The application will be available at:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```text
+http://localhost:3000
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## WebSocket Endpoint
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+This project uses the WebSocket endpoint specified in the Sprint 11 Technical Requirements Document:
 
-## Learn More
+```text
+wss://echo.websocket.events
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+If the endpoint is temporarily unavailable, the application displays a **Disconnected** status and a **Connection Lost. Attempting to reconnect...** notification while continuing to retry the connection automatically. This behavior is intentional and demonstrates the required error-handling and reconnection workflow.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## What Was Implemented
 
-### Code Splitting
+* WebSocket initialization and cleanup
+* `onopen`, `onmessage`, `onerror`, and `onclose` event handling
+* Functional state updates for incoming messages
+* Exponential backoff reconnection logic
+* Online and offline network detection
+* Accessible live message feed
+* Analytics hook for primary user actions
+* Responsive enterprise-style interface
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Notes
 
-### Analyzing the Bundle Size
+This project was developed as a Sprint 11 client deliverable. The implementation prioritizes stability, predictable connection behavior, and clean React architecture. Because it relies on a public WebSocket echo server, connection availability may vary depending on DNS resolution or temporary server availability.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Author
 
-### Making a Progressive Web App
+**Naushad Ahamad**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Sprint 11 - Real-Time Communication Portal
