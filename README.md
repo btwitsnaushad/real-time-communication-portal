@@ -1,44 +1,53 @@
 # Real-Time Communication Portal
 
-A React-based real-time communication application built for Sprint 11, designed to simulate a production-style messaging environment using WebSockets. The project focuses on connection lifecycle management, automatic reconnection, accessibility, and a clean enterprise interface that remains stable even when the network connection becomes unreliable.
+A production-style real-time messaging application built with **React** and the **WebSocket API**. This project was developed as part of **Sprint 11 – Real-Time Communication Portal**, with a strong focus on connection reliability, automatic reconnection, accessibility, and a clean enterprise-style user interface.
 
-## Overview
+Unlike a basic chat demo, this implementation emphasizes **connection lifecycle management**, **fault tolerance**, and **responsive user experience**, making it a practical front-end engineering project.
 
-The application establishes a persistent WebSocket connection and updates the interface in real time whenever a new message is received. It also handles connection failures gracefully by notifying the user and automatically attempting to reconnect using an exponential backoff strategy.
+## Live Demo
+
+**Live Application:**
+https://real-time-communication-portal-tawny.vercel.app
+
+## GitHub Repository
+
+**Repository:**
+https://github.com/btwitsnaushad/real-time-communication-portal
 
 ## Features
 
-* Persistent WebSocket connection using the required TRD endpoint
-* Real-time message updates
+* Real-time WebSocket communication
+* Persistent connection management
+* Automatic reconnection using exponential backoff
 * Connection status indicator (Connecting, Connected, Disconnected)
-* Automatic reconnection with exponential backoff
 * Graceful handling of connection failures
-* Initial loading state and empty state UI
-* Input validation to prevent empty messages
+* Initial loading state and empty state interface
+* Input validation for empty and whitespace messages
 * Automatic scrolling to the latest message
-* Keyboard-accessible controls and ARIA support
-* Simulated analytics logging for user actions
-* Responsive monochromatic interface suitable for desktop and mobile devices
+* Accessibility support (`role="log"`, `aria-live="polite"`)
+* Simulated analytics hook for primary user actions
+* Responsive monochromatic UI suitable for desktop and mobile devices
 
 ## Tech Stack
 
-* React 18
-* JavaScript (ES6+)
-* Native WebSocket API
-* Vanilla CSS
+* **React 18**
+* **JavaScript (ES6+)**
+* **Native WebSocket API**
+* **Vanilla CSS**
 
 ## Project Structure
 
+```text
 src/
-
-* LiveFeedEngine.jsx
-* LiveFeedEngine.css
-* App.js
-* index.js
+├── LiveFeedEngine.jsx
+├── LiveFeedEngine.css
+├── App.js
+└── index.js
+```
 
 ## Getting Started
 
-Clone the repository and install the dependencies:
+Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/btwitsnaushad/real-time-communication-portal.git
@@ -47,7 +56,7 @@ npm install
 npm start
 ```
 
-The application will be available at:
+The application will run locally at:
 
 ```text
 http://localhost:3000
@@ -61,22 +70,22 @@ This project uses the WebSocket endpoint specified in the Sprint 11 Technical Re
 wss://echo.websocket.events
 ```
 
-If the endpoint is temporarily unavailable, the application displays a **Disconnected** status and a **Connection Lost. Attempting to reconnect...** notification while continuing to retry the connection automatically. This behavior is intentional and demonstrates the required error-handling and reconnection workflow.
+If the endpoint is temporarily unavailable, the application intentionally displays a **Disconnected** status and a **Connection Lost. Attempting to reconnect...** notification while continuing to retry the connection automatically. This behavior demonstrates the required **error-handling and reconnection workflow**.
 
 ## What Was Implemented
 
 * WebSocket initialization and cleanup
 * `onopen`, `onmessage`, `onerror`, and `onclose` event handling
-* Functional state updates for incoming messages
+* Functional React state updates for incoming messages
 * Exponential backoff reconnection logic
 * Online and offline network detection
 * Accessible live message feed
-* Analytics hook for primary user actions
+* Analytics hook for user actions
 * Responsive enterprise-style interface
 
-## Notes
+## Project Status
 
-This project was developed as a Sprint 11 client deliverable. The implementation prioritizes stability, predictable connection behavior, and clean React architecture. Because it relies on a public WebSocket echo server, connection availability may vary depending on DNS resolution or temporary server availability.
+The application has been successfully deployed on **Vercel** and is fully configured for production deployment. The interface remains stable even when the public WebSocket endpoint is unavailable, demonstrating graceful degradation and resilient connection handling.
 
 ## Author
 
