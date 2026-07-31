@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import './LiveFeedEngine.css'; // Apni CSS file ka naam match kar lena
+import './LiveFeedEngine.css'; 
 
 const TRD_WS_URL = 'wss://echo.websocket.events';
 
@@ -12,6 +12,21 @@ const LiveFeedEngine = () => {
   const reconnectAttempt = useRef(0);
   const maxReconnectDelay = 30000; // Maximum delay of 30 seconds
   const reconnectTimeoutRef = useRef(null);
+
+  // Defined first to avoid the "used before defined" warning
+  const handleReconnection = useCallback(() => {
+    // Exponential Backoff logic: 1s, 2s, 4s, 8s... up to max 30s
+    let delay = Math.pow(2, reconnectAttempt.current) * 1000;
+    delay = Math.min(delay, maxReconnectDelay);
+    
+    console.log(`Attempting to reconnect in ${delay}ms...`);
+    reconnectAttempt.current += 1;
+    
+    reconnectTimeoutRef.current = setTimeout(() => {
+      connectWebSocket();
+    }, delay);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally omitting connectWebSocket to prevent circular dependency warning
 
   const connectWebSocket = useCallback(() => {
     // Clear previous timeout if any
@@ -53,20 +68,7 @@ const LiveFeedEngine = () => {
       setConnectionStatus('DISCONNECTED');
       handleReconnection();
     }
-  }, []);
-
-  const handleReconnection = useCallback(() => {
-    // Exponential Backoff logic: 1s, 2s, 4s, 8s... up to max 30s
-    let delay = Math.pow(2, reconnectAttempt.current) * 1000;
-    delay = Math.min(delay, maxReconnectDelay);
-    
-    console.log(`Attempting to reconnect in ${delay}ms...`);
-    reconnectAttempt.current += 1;
-    
-    reconnectTimeoutRef.current = setTimeout(() => {
-      connectWebSocket();
-    }, delay);
-  }, [connectWebSocket]);
+  }, [handleReconnection]);
 
   useEffect(() => {
     // OS-level network event listeners
