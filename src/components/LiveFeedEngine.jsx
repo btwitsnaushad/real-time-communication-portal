@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './LiveFeedEngine.css'; 
 
-// Mandatory WebSocket endpoint as per TRD Phase 1 requirements for final submission.
 const TRD_WS_URL = 'wss://echo.websocket.events';
 
-// Custom hook for telemetry simulation as required by Non-Functional Requirements (NFRs)
 const useAnalytics = () => {
   return (actionName) => {
     console.log(`[Analytics] ${actionName}`);
@@ -18,12 +16,11 @@ const LiveFeedEngine = () => {
   
   const wsRef = useRef(null);
   const reconnectAttempt = useRef(0);
-  const maxReconnectDelay = 10000; // Capped at 10 seconds to strictly meet TRD requirements
+  const maxReconnectDelay = 10000; 
   const reconnectTimeoutRef = useRef(null);
   const messagesEndRef = useRef(null);
   const trackAnalytics = useAnalytics();
 
-  // Auto-scroll logic to keep the newest messages in view
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -32,7 +29,6 @@ const LiveFeedEngine = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Handles exponential backoff for WebSocket reconnections
   const handleReconnection = useCallback(() => {
     let delay = Math.pow(2, reconnectAttempt.current) * 1000;
     delay = Math.min(delay, maxReconnectDelay);
@@ -46,7 +42,6 @@ const LiveFeedEngine = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); 
 
-  // Initializes and manages the WebSocket connection lifecycle
   const connectWebSocket = useCallback(() => {
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current);
@@ -59,7 +54,7 @@ const LiveFeedEngine = () => {
       wsRef.current.onopen = () => {
         console.log('WebSocket Connected');
         setConnectionStatus('CONNECTED');
-        reconnectAttempt.current = 0; // Reset attempts on successful connection
+        reconnectAttempt.current = 0; 
       };
 
       wsRef.current.onmessage = (event) => {
@@ -79,7 +74,7 @@ const LiveFeedEngine = () => {
 
       wsRef.current.onerror = (error) => {
         console.error('WebSocket Error:', error);
-        wsRef.current.close(); // Force close to trigger onclose event and start reconnection
+        wsRef.current.close(); 
       };
     } catch (error) {
       console.error('Connection setup failed:', error);
@@ -88,7 +83,6 @@ const LiveFeedEngine = () => {
     }
   }, [handleReconnection]);
 
-  // Network listener to handle OS-level online/offline events
   useEffect(() => {
     const handleOnline = () => {
       console.log('Network online. Forcing reconnection...');
@@ -107,7 +101,6 @@ const LiveFeedEngine = () => {
 
     connectWebSocket();
 
-    // Cleanup function to gracefully close connections and prevent memory leaks
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
@@ -116,7 +109,6 @@ const LiveFeedEngine = () => {
     };
   }, [connectWebSocket]);
 
-  // Handles outbound message formatting, validation, and transmission
   const sendMessage = (e) => {
     e.preventDefault();
     if (inputMessage.trim() && wsRef.current?.readyState === WebSocket.OPEN) {
@@ -131,15 +123,15 @@ const LiveFeedEngine = () => {
       wsRef.current.send(inputMessage);
       setInputMessage('');
       
-      // Trigger analytics tracking for user action
       trackAnalytics('User emitted payload');
     }
   };
 
   return (
     <div className="communication-portal">
-      {connectionStatus !== 'CONNECTED' && (
-        <div className="error-banner">
+      {/* FIXED: Error banner only shows when actually disconnected */}
+      {connectionStatus === 'DISCONNECTED' && (
+        <div className="error-banner" role="alert">
           ⚠️ Connection Lost. Attempting to reconnect...
         </div>
       )}
@@ -147,13 +139,15 @@ const LiveFeedEngine = () => {
       <div className="chat-container">
         <header className="chat-header">
           <div className="header-title">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            {/* FIXED: Added aria-label and role for accessibility */}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" role="img" aria-label="Portal Icon">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
             Real-Time Communication Portal
           </div>
-          <div className="status-badge">
-            <span className={`status-dot ${connectionStatus === 'CONNECTED' ? 'connected' : 'disconnected'}`}></span>
+          <div className="status-badge" aria-live="polite">
+            {/* FIXED: Status dot color logic corrected */}
+            <span className={`status-dot ${connectionStatus === 'CONNECTED' ? 'connected' : connectionStatus === 'DISCONNECTED' ? 'disconnected' : ''}`} aria-hidden="true"></span>
             {connectionStatus === 'CONNECTED' 
               ? 'Connected' 
               : connectionStatus === 'DISCONNECTED' 
@@ -162,9 +156,14 @@ const LiveFeedEngine = () => {
           </div>
         </header>
 
-        {/* Chat feed container equipped with required accessibility attributes */}
         <div className="chat-feed" role="log" aria-live="polite">
-          {messages.length === 0 ? (
+          {/* FIXED: Added Loading State & Spinner */}
+          {connectionStatus === 'CONNECTING' && messages.length === 0 ? (
+            <div className="loading-state">
+              <div className="spinner"></div>
+              <p>Establishing connection...</p>
+            </div>
+          ) : messages.length === 0 ? (
             <div className="empty-state">No messages yet. Start the conversation!</div>
           ) : (
             messages.map((msg) => (
@@ -176,12 +175,14 @@ const LiveFeedEngine = () => {
               </div>
             ))
           )}
-          {/* Invisible target element for the auto-scroll function */}
           <div ref={messagesEndRef} />
         </div>
 
         <form className="chat-input-form" onSubmit={sendMessage}>
+          {/* FIXED: Input Label properly associated with input via htmlFor/id */}
+          <label htmlFor="message-input" className="sr-only">Type your message</label>
           <input
+            id="message-input"
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
@@ -189,10 +190,12 @@ const LiveFeedEngine = () => {
             disabled={connectionStatus !== 'CONNECTED'}
             className="chat-input"
           />
+          {/* FIXED: aria-label added to button */}
           <button 
             type="submit" 
             disabled={!inputMessage.trim() || connectionStatus !== 'CONNECTED'}
             className="send-button"
+            aria-label="Send Message"
           >
             Send
           </button>
