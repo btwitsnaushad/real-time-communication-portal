@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './LiveFeedEngine.css'; 
 
-const TRD_WS_URL = 'wss://ws.postman-echo.com/raw';
+const TRD_WS_URL = 'wss://echo.websocket.events';
 
 const useAnalytics = () => {
   return (actionName) => {
