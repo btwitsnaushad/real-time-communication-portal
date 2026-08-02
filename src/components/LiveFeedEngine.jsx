@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './LiveFeedEngine.css'; 
 
-const TRD_WS_URL = 'wss://echo.websocket.events';
+const TRD_WS_URL = 'wss://ws.postman-echo.com/raw';
 
 const useAnalytics = () => {
   return (actionName) => {
@@ -141,7 +141,7 @@ const LiveFeedEngine = () => {
           <div className="header-title">
             {/* FIXED: Added aria-label and role for accessibility */}
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" role="img" aria-label="Portal Icon">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
             Real-Time Communication Portal
           </div>
